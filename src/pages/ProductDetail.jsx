@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { products } from "../data/products";
 import { useCart } from "../context/CartContext";
-import Popup from "../components/Popup";
 
 function ProductDetail() {
   const { id } = useParams();
   const product = products.find((p) => p.id === parseInt(id));
   const { addToCart } = useCart();
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(product?.colors[0]);
   const [selectedSize, setSelectedSize] = useState(product?.sizes[0]);
   const [selectedVersion, setSelectedVersion] = useState(product?.versions[0]);
+  const popoverRef = useRef(null);
 
   // Generate additional images for the product
   const additionalImages = [
@@ -22,6 +22,19 @@ function ProductDetail() {
   ];
 
   const [mainImage, setMainImage] = useState(additionalImages[0]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popoverRef.current && !popoverRef.current.contains(event.target)) {
+        setIsPopoverOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   if (!product) {
     return <div>Product not found</div>;
@@ -37,7 +50,8 @@ function ProductDetail() {
       },
       quantity
     );
-    setIsPopupOpen(true);
+    setIsPopoverOpen(true);
+    setTimeout(() => setIsPopoverOpen(false), 3000); // Close popover after 3 seconds
   };
 
   return (
@@ -150,21 +164,39 @@ function ProductDetail() {
           />
         </div>
         <div className="relative">
-          {isPopupOpen && (
-            <div className="absolute bottom-full left-0 mb-2">
-              <Popup
-                message={`Added ${quantity} item(s) to cart!`}
-                isOpen={isPopupOpen}
-                onClose={() => setIsPopupOpen(false)}
-              />
-            </div>
-          )}
           <button
             onClick={handleAddToCart}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
           >
             Add to Cart
           </button>
+          {isPopoverOpen && (
+            <div
+              ref={popoverRef}
+              className="absolute left-0 top-full mt-2 w-full max-w-sm bg-emerald-500 text-white rounded-md shadow-lg"
+            >
+              <div className="flex items-center p-4">
+                <svg
+                  className="w-6 h-6 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
+                <span className="font-semibold">Added to cart!</span>
+                <span className="ml-2">
+                  {quantity} item{quantity > 1 ? "s" : ""} added
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

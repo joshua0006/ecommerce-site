@@ -1,10 +1,29 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { products, categories } from "../data/products";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { products } from "../data/products";
 
 function ProductList() {
+  const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const categories = [
+    "All",
+    "Electronics",
+    "Clothing",
+    "Home & Garden",
+    "Sports",
+  ];
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const category = params.get("category");
+    if (category && categories.includes(category)) {
+      setSelectedCategory(category);
+    } else {
+      setSelectedCategory("All");
+    }
+  }, [location]);
 
   const filteredProducts = products.filter(
     (product) =>
@@ -44,16 +63,6 @@ function ProductList() {
 
       {/* Category filter buttons */}
       <div className="mb-4 md:mb-8 flex flex-wrap gap-2">
-        <button
-          onClick={() => setSelectedCategory("All")}
-          className={`px-3 py-1 text-sm md:px-4 md:py-2 md:text-base rounded-full ${
-            selectedCategory === "All"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-          }`}
-        >
-          All Categories
-        </button>
         {categories.map((category) => (
           <button
             key={category}

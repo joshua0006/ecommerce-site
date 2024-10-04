@@ -9,6 +9,11 @@ const productNames = [
   "Ultra-Thin Laptop",
   "Air Purifier with HEPA Filter",
   "Adjustable Standing Desk",
+  "Moisture-Wicking Athletic Shirt",
+  "Memory Foam Pillow",
+  "Indoor Herb Garden Kit",
+  "Professional Tennis Racket",
+  "Bluetooth Speaker",
 ];
 
 const getRandomProductName = () => {
@@ -17,10 +22,9 @@ const getRandomProductName = () => {
 
 const productCategories = [
   "Electronics",
-  "Home & Kitchen",
-  "Sports & Outdoors",
-  "Beauty & Personal Care",
-  "Books",
+  "Clothing",
+  "Home & Garden",
+  "Sports",
 ];
 
 const getRandomCategory = () => {
