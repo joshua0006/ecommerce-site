@@ -72,7 +72,7 @@ function Home() {
                   Welcome to E-Shopper
                 </h1>
                 <p className="text-xl md:text-2xl lg:text-3xl mb-6 md:mb-10">
-                  Discover amazing products at great prices!
+                  Products shown here are for placeholder purposes only.
                 </p>
                 <Link
                   to="/products"
